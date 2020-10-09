@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>태그태그</h1>
+    <p><b>for 활용</b></p>
+    {% for menu in menus %}
+        {{ menu }}
+    {% endfor %}
+    <hr>
+
+    {% for menu in menus %}
+        {{ forloop.counter }}: {{ menu }}
+    {% endfor %}
+    <hr>
+
+    {% for menu in menus %}
+        {{ forloop.revcounter }} : {{ menu }}
+    {% endfor %}
+    <hr>
+
+    {% for menu in menus %}
+        {{forloop.first}}: {{menu}}
+    {% endfor %}
+    <hr>
+
+    {% for a in empty_list %}
+        {{ a }}
+    {% empty %}
+        <p>없다~</p>
+    {% endfor %}
+    <br>
+    <br>
+    <hr>
+    <p><b>if 활용</b></p>
+    {% if '탕수육' in menus%}
+        <p>탕수육은 근본이지</p>
+    {% endif %}
+    <hr>
+    {% if '칠리탕수육' not in menus %}
+        <p>아직 신메뉴라 등록이 안된 모양이야</p>
+    {% endif %}
+    <hr>
+    {% if empty_list|length < 10 %}
+        <p>길이가 짧군</p>
+    {% endif %}
+</body>
+</html>
