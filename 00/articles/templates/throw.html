@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>보내주는 페이지</h1>
-    <form action="/catch/" method="GET">
+    <form action="{% url 'catch'%}" method="GET">
     <label for="message">데이터 입력: </label>
     <input type="text" id='message' name='message'>
     <input type="submit">

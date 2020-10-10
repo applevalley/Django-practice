@@ -184,7 +184,35 @@ python manage.py startapp articles
 
 ![catch](_image/catch.JPG)
 
+- throw에서 /catch/와 같이 작성했는데,
 
+```
+path('catch/', views.catch, name='catch'),
+```
+
+- 위처럼 path 함수에서 name이라는 인수를 정의하면 아래처럼 작성이 가능하다.
+
+```
+<form action="{% url 'catch'%}" method="GET">
+```
+
+- 위 방법의 특징은 `{% url %}` 템플릿 태그로 URL 경로의 의존성을 제거할 수 있다는 것이다. 다만 이름 공간에 대한 문제가 생긴다. 두개의 앱이 있는데, 두 앱 모두 catch라는 view를 가지고 있다고 생각해보자. 동일한 view를 가지게 되고, 동일한 url을 사용하게 된다. 그렇다면 `{% url 'catch'%}`처럼 사용한다면 어느 앱의 view에서 URL을 생성하게 되는지 어떻게 알 수 있을까?
+- 이 문제를 해결하려면 어떻게 해야 할까?
+
+```
+#urls.py
+
+app_name='articles'
+urlpatterns = [
+	path('catch/', views.catch, name='catch'),
+]
+```
+
+- 처럼 urls.py에 app_name으로 이름 공간을 설정해주면 된다! 그러면 이제 url 탬플릿 태그를 사용하는 방식도 달라져야 한다. 이렇게!
+
+```
+<form action="{% url 'articles:catch' %}" method="GET">
+```
 
 ## HTML form
 
@@ -214,18 +242,30 @@ python manage.py startapp articles
   - 그 후 적절한 view 함수를 호출하고 HttpRequest를 view 함수의 첫 인수로 전달한다.
   - 각 view 함수는 HttpResponse 개체를 반환함.
 
+## 템플릿 상속
 
+- 왜 쓰는걸까? 상속을 이용하면 사이트의 모든 공통 요소를 포함하고, 오버라이드 가능한 블록을 정의하는 기본 뼈대 템플릿을 만들 수 있기 때문이다. 코드의 재 사용성에 초점을 둔다.
 
+- 우선 만드려면 프로젝트 폴더의 templates에 파일을 생성해준다.
 
+- django는 settings.py의 `APP_DIRS=True` 설정에 따라 기본적으로 `app_name/templates`를 인식하는데, 우리가 상속시키려는 파일은 앱이 아닌 프로젝트 폴더 내의 template이기에 settings.py의 TEMPLATES = [
+
+  ​	'DIRS': [BASE_DIR / 'project_name' / 'templates'],
+
+  ]
+
+- 처럼 django에게 그 위치를 알려주어야 한다. 
+- 이렇게 상속을 지정하고 나면 앱의 템플릿에서 그 상속을 적용해야 하는데, block과 extends 태그가 있다. extend 태그는 현재의 템플릿이 부모 템플릿을 확장(상속)한다는 것을 뜻하고, 최상단에 위치시킨다. block 태그는 하위 탬플릿에서 오버라이드 가능한 블록을 정의해준다.
 
 
 
 # 지금까지 한 것은?
 
 - Django는 기존 프레임워크와 다르게 MTV 패턴을 따르고 있다
-
 - 사용자가 index/라는 주소로 요청했을 때, 우리가 만든 url인 index/에는 path값이 있었는데, 이 path가 views.py의 index라는 함수를 호출하고, 이 함수의 리턴은 index.html이라는 템플릿을 요청과 함께 렌더해서 사용자에게 응답으로 보여주게 된다.
 - 반드시 코드의 작성 순서는 urls.py -> views.py -> template 구성이다. 
 - 하나의 함수는 하나의 역할만
 - DTL문법 != 파이썬 문법
-- 
+- 이름 공간이란 객체를 구분할 수 있는 범위를 나타내는 말로 하나의 이름 공간에서는 하나의 이름이 하나의 객체를 가리킨다.
+- 서로 다른 app의 이름을 가진 url name은 app_name을 설정해 구분하고, 중간에 폴더를 임의로 만들어주어 이름공간을 설정한다. (articles/templates/articles/index.html)
+- 템플릿 상속은 기본적으로 코드의 재사용성에 중점을 둔다.
